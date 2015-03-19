@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>three.js practice</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <a href="index.html">Back to Chat</a><br>
+        
+        <script src="./js/three.min.js"></script>
+        
+        <script>
+            /*ここに3Dを表現する記述を書いていきます*/
+            
+            //making scene, camera and renderer
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            var renderer = new THREE.WebGLRenderer();
+            
+            //renderer setting
+            renderer.setSize( window.innerWidth, window.innerHeight ); //renderer size
+            document.body.appendChild( renderer.domElement ); //set renderer at body
+            
+            var geometry = new THREE.CubeGeometry(1,1,1);
+            var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+            var cube = new THREE.Mesh( geometry, material );
+            
+            //add cube and set camera position
+            scene.add( cube );
+            camera.position.z = 50;
+            
+            //main engine
+            function render() {
+                requestAnimationFrame(render); //render ready
+                cube.rotation.x += 0.1;
+                cube.rotation.y += 0.1;
+                
+                cameramove();
+                cube_move();
+                
+                renderer.render(scene, camera); //renderer on
+            }
+            
+            /*function move_switch(){
+                if(camera.posotion.z) >= 10){
+                    
+                }
+            }*/
+            
+            // camera move function
+            function cameramove(){
+                if(camera.position.z >= 10){
+                    camera.position.z -= 0.5;
+                }
+                else{
+                    camera.position.z = 50;
+                }
+            }
+            
+            function cube_move(){
+                cube.position.x += 0.5;
+            }
+            
+            //main move
+            render();
+        
+        </script>
+    </body>
+</html>
