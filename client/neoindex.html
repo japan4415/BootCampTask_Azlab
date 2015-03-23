@@ -38,6 +38,7 @@
                 
                 cameramove();
                 cube_move();
+            
                 
                 renderer.render(scene, camera); //renderer on
             }
@@ -59,7 +60,11 @@
             }
             
             function cube_move(){
-                cube.position.x += 0.5;
+                cube.position.x += 0.005;
+            }
+            
+            function test(){
+                //this is test function
             }
             
             //main move
