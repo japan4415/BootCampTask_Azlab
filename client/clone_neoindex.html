@@ -25,9 +25,11 @@
             var geometry = new THREE.CubeGeometry(21,2,1);
             var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
             var cube = new THREE.Mesh( geometry, material );
+            var cube2 = new THREE.Mesh(geometry,material);
             
             //add cube and set camera position
             scene.add( cube );
+            scene.add(cube2);
             camera.position.z = 50;
             
             //main engine
@@ -35,7 +37,8 @@
                 requestAnimationFrame(render); //render ready
                 cube.rotation.x += 0.1;
                 cube.rotation.y += 0.1;
-                
+                cube2.rotation.x -= 0.2;
+                cube2.rotation.y -= 0.2;
                 cameramove();
                 cube_move();
             
