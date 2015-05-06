@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>test_click</title>
+        <meta charset="utf-8">
+    </head> 
+    <body>
+        <script src="./js/three.min.js"></script>
+        <script src="./js/helvetiker_bold.typeface.js"></script>
+        <script src="./js/OrbitControls.js"></script>
+        <script>
+//---共通変数宣言--------------------------------------------------------------------------------
+    var width = window.innerWidth * 0.85;
+    var height = width * 9 / 16;
+//---ここまで------------------------------------------------------------------------------------
+//---レンダラー実装と調整-ここから----------------------------------------------------------------
+    var renderer;
+    function init_renderer(){
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width,height);
+    }
+    init_renderer();
+    document.body.appendChild(renderer.domElement);
+//---ここまで-------------------------------------------------------------------------------------
+//---シーン実装と調整-ここから----------------------------------------------------------------
+    var scene;
+    function init_scene(){
+        scene = new THREE.Scene();
+    }
+    init_scene();
+//---ここまで-------------------------------------------------------------------------------------
+//---カメラ実装と調整-ここから----------------------------------------------------------------
+    var camera
+    function init_camera(){
+        camera = new THREE.PerspectiveCamera();
+        camera .lookAt = (0,0,0);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 100;
+    }
+    init_camera();
+//---ここまで-------------------------------------------------------------------------------------
+//---タイトル実装と調整-ここから----------------------------------------------------------------
+    var geometry = new THREE.TextGeometry("Snake Battle",{size: 10, height: 2, curveSegments: 100,
+                    font: "helvetiker", weight: "bold", style: "normal",
+                    bevelThickness: 0.1, bevelSize: 0.1, bevelEnabled: true});
+    var material = new THREE.MeshBasicMaterial({color:0x00ff01});
+    var obj = new THREE.Mesh(geometry,material);
+    obj.position.x -= 40;
+    obj.position.y -= 40;
+    scene.add(obj);
+//---ここまで-------------------------------------------------------------------------------------
+//---動くもの実装と調整-ここから----------------------------------------------------------------
+    var demo_geometry = new THREE.CubeGeometry(21,0.1,0.1);
+    var cube = new Array(100);
+    
+    for (var i = 0;i < cube.length;i++){
+        cube[i] = new THREE.Mesh(demo_geometry,material);
+        scene.add(cube[i]);
+    }
+//---ここまで-------------------------------------------------------------------------------------
+//---マウスクリック実装-ここから------------------------------------------------------------------
+    var projector = new THREE.Projector();
+    var mouse = {x:0,y:0};
+    var targetList = [];
+    targetList.push(obj);
+    
+    window.onmousedown = function(ev){
+        if(ev.target == renderer.domElement){
+            var rect = ev.target.getBoundingClientRect();
+            
+            mouse.x = ev.clientX - rect.left;
+            mouse.y = ev.clientY - rect.top;
+            
+            mouse.x = (mouse.x / width) * 2 - 1;
+            mouse.y = (mouse.y / height) * 2 + 1;
+            
+            var vector = new THREE.Vector3(mouse.x,mouse.y,1);
+            projector.unprojectVector(vector,camera);
+            var ray = new THREE.Raycaster(camera.position,vector.sub(camera.position).normalize());
+            var obj = ray.intersectObjects(targetList);
+            
+            if (obj.length > 0){
+                location.href="http://gigazine.net/";
+            }
+        }
+    };
+//---マウスクリック実装-ここまで---------------------------------------------------------------------
+//---表示(アニメーションも)-ここから-----------------------------------------------------------------------------------
+    function render(){
+        renderer.clear();
+        window.requestAnimationFrame(render);
+        //obj.position.x -= 0.01;
+        //obj.position.y -= 0.01;
+        renderer.render(scene,camera);
+        for(var i2 = 0;i2 < cube.length;i2++){
+            cube[i2].rotation.x += 0.01 * i2 / 5;
+            cube[i2].rotation.y += 0.01 * i2 / 5;
+            cube[i2].rotation.z += 0.01 * i2 / 5;
+        }
+    }
+    render();
+    //renderer.render(scene,camera);
+//---ここまで----------------------------------------------------------------------------------------
+        </script>
+    </body>
+</html>

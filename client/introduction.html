@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>introduction</title>
+        <meta　charset="utf-8">
+            <script src="Three.js"></script>
+            <script src="OrbitControls.js"></script>
+            <link rel="stylesheet" type="text/css" href="screan.css">
+  </head>
+        <body onload="threeStart();" , style="overflow: hidden;">
+             <div id="canvas-frame"></div>
+            <script>
+            
+  /*----------------webGL処理①--------------*/  
+  var width, height;                                                                 
+  var renderer;                                                                      
+  function initThree() {
+    width = document.getElementById('canvas-frame').clientWidth;                   
+    height =  document.getElementById('canvas-frame').clientHeight;              
+    renderer = new THREE.WebGLRenderer({antialias: true});                       
+    renderer.setSize(width, height);                                            
+    document.getElementById('canvas-frame').appendChild(renderer.domElement);  
+    renderer.shadowMapEnabled = true;                                         
+  }
+/*----------------webGL処理①--ここまで---------*/  
+
+
+/*----------------カメラ処理②----------------*/  
+  var camera;                                                                       
+  var controls;                                                                   
+  function initCamera() {                                                        
+    camera = new THREE.PerspectiveCamera( 45 , width / height , 1 , 10000 );    
+    camera.up.x = 0; camera.up.y = 0; camera.up.z = 1;                          
+    camera.position.set(1394, 1416, 854);                                      
+    controls = new THREE.OrbitControls(camera,renderer.domElement);          
+ 
+  }
+   /*------------カメラ処理②---ここまで------*/  
+  
+ /*----------------scene処理③----------------*/   
+  var scene;
+  function initScene() {    
+    scene = new THREE.Scene();
+  }
+ /*----------scene処理③（ここまで）----------*/   
+  
+ /*----------------ライトの生成④--------------*/ 
+  var light, light2;                                                 
+  function initLight() {                                            
+    light = new THREE.DirectionalLight(0xcccccc,1.6);             
+    light.position = new THREE.Vector3(0.577, 0.577, 0.577);     
+    light.castShadow = true;                                    
+    scene.add(light);                                          
+     
+    light2 = new THREE.AmbientLight(0x333333);               
+    scene.add(light2);                                      
+  }
+ /*----------------ライトの生成④--ここまで--------*/ 
+ 
+  /*--------------------オブジェクト処理⑤------*/ 
+
+  var sphere,plane,axis;                                                     
+  function initObject(){
+  
+        sphere = new THREE.Mesh(                                            
+                  new THREE.SphereGeometry(200),                           
+                  new THREE.MeshPhongMaterial({                                       
+                       color: 0xffffff                                   
+                       }));
+　　　sphere.castShadow = true;
+      sphere.receiveShadow = true;
+      scene.add(sphere);                                               
+      sphere.position.set(0,0,500);                                   
+      
+      
+     plane =  new THREE.Mesh(                                       
+              new THREE.CircleGeometry(1000, 100),                 
+              new THREE.MeshLambertMaterial({                           
+                side: THREE.DoubleSide,                             
+                color: 0x000000,                                                                  
+                }));        
+     plane.receiveShadow = true;         
+     plane.position.set(0,0,1);                       
+     scene.add(plane);                                 
+     
+     axis = new THREE.AxisHelper(1000);             
+     scene.add(axis);                              
+     axis.position.set(0,0,1);                    
+    
+  }
+  
+   /*-------オブジェクト処理⑤-----ここまで-------*/ 
+   
+   
+   /*--------------------ループ処理⑥-----------*/ 
+    function loop(){  
+        renderer.clear();   
+        renderer.render(scene, camera);
+        controls.update();   
+        window.requestAnimationFrame(loop);
+    }
+   /*------------ループ処理⑥-----ここまで-------*/   
+    
+/*---------こちらで関数読み込み⑦----------------*/ 
+  function threeStart() {
+    initThree(); 
+    initCamera();
+    initScene();    
+    initLight();
+    initObject();
+    loop();     
+  }
+/*------こちらで関数読み込み⑦----ここまで---------*/ 
+
+
+            </script>
+        </body>
+</html>
+
