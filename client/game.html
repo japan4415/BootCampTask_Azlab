@@ -7,13 +7,14 @@
     <body>
         <script src="./js/three.min.js"></script>
         <script src="./js/helvetiker_bold.typeface.js"></script>
-        <script src="./js/OrbitControls.js"></script>
         <script>
-//---共通変数宣言--------------------------------------------------------------------------------
+//---共通変数宣言-------------------------------------------
     var width = window.innerWidth * 0.85;
     var height = width * 9 / 16;
-//---ここまで------------------------------------------------------------------------------------
-//---レンダラー実装と調整-ここから----------------------------------------------------------------
+    var max_range_x = 100;
+    var max_range_y = 100;
+//----------------------------------------------------------
+//---レンダラー作成-----------------------------------------
     var renderer;
     function init_renderer(){
         renderer = new THREE.WebGLRenderer();
@@ -21,14 +22,14 @@
     }
     init_renderer();
     document.body.appendChild(renderer.domElement);
-//---ここまで-------------------------------------------------------------------------------------
+//---ここまで-----------------------------------------------
 //---シーン実装と調整-ここから----------------------------------------------------------------
     var scene;
     function init_scene(){
         scene = new THREE.Scene();
     }
     init_scene();
-//---ここまで-------------------------------------------------------------------------------------
+//---ここまで----------------------------------------------------------------
 //---カメラ実装と調整-ここから----------------------------------------------------------------
     var camera
     function init_camera(){
@@ -39,69 +40,125 @@
         camera.position.z = 100;
     }
     init_camera();
-//---ここまで-------------------------------------------------------------------------------------
-//---ランダム出現実装と調整-ここから----------------------------------------------------------------
-    function item(){
-        this.placename = 0;
-        this.texturename = null;
+//---ここまで------------------------------------------------------------------
+//---使用する変数の宣言-----------
+    function main_position(){
+        this.x = 0;
+        this.y = 0
     }
-    function placexyz(){
-        this.x,this.y,this.z = 0;
+    var main_xy = new Array();
+    main_xy.push(new main_position());
+    main_xy[0].x = 0;
+    main_xy[0].y = 0;
+    function esa_potition(){
+        this.x = 0;
+        this.y = 0;
+        this.image = "no image";
     }
-    var geometry = new THREE.CubeGeometry(1,1,1)
-    var material = new THREE.MeshBasicMaterial({color:0x00ff01});
-    var obj = new THREE.Mesh(geometry,material);
-    scene.add(obj);
-//---ここまで-------------------------------------------------------------------------------------
-//---3,2,1実装と調整-ここから----------------------------------------------------------------
-    var 3geometry = new THREE.TextGeometry("3",{size: 10, height: 2, curveSegments: 100,
-                    font: "helvetiker", weight: "bold", style: "normal",
-                    bevelThickness: 0.1, bevelSize: 0.1, bevelEnabled: true});
-    var material = new THREE.MeshBasicMaterial({color:0x00ff01});
-    var 3obj = new THREE.Mesh(3geometry,material);
-    scene.add(3obj);
-//---ここまで-------------------------------------------------------------------------------------
-//---マウスクリック実装-ここから------------------------------------------------------------------
-    var projector = new THREE.Projector();
-    var mouse = {x:0,y:0};
-    var targetList = [];
-    window.onmousedown = function(ev){
-        if(ev.target == renderer.domElement){
-            var rect = ev.target.getBoundingClientRect();
-            
-            mouse.x = ev.clientX - rect.left;
-            mouse.y = ev.clientY - rect.top;
-            
-            mouse.x = (mouse.x / width) * 2 - 1;
-            mouse.y = (mouse.y / height) * 2 + 1;
-            
-            var vector = new THREE.Vector3(mouse.x,mouse.y,1);
-            projector.unprojectVector(vector,camera);
-            var ray = new THREE.Raycaster(camera.position,vector.sub(camera.position).normalize());
-            var objiso = ray.intersectObjects(targetList);
-            
-            if (objiso.length > 0){
-                alert("click!!");
-                location.href="http://gigazine.net/";
+    var esa_xy = new Array();
+    var move_mode = 0; //1:x+,2:x-,3:y+,4:y-
+//---ここまで----------
+//---餌生成-j個目のオブジェクトに対して使う関数---------------------------------
+    function makinge_esa(j){
+        esa_xy[j] = new esa_potition();
+        esa_xy[j].x = Math.random() * max_range_x * 2 - max_range_x;
+        esa_xy[j].y = Math.random() * max_range_y * 2 - max_range_y;
+    }
+//---ここまで------------------------------------
+//---主人公生成-------------------------
+    var main_geometry = new THREE.BoxGeometry(2,2,2);
+    var texture = new THREE.ImageUtils.loadTexture('./crate.gif');
+    texture.anisotropy = renderer.getMaxAnisotropy();
+    var main_material = new THREE.MeshBasicMaterial( { map: texture } );
+    //var main_material = new THREE.MeshBasicMaterial({color:0x00ff00});
+    var main_obj = new THREE.Mesh(main_geometry,main_material);
+    scene.add(main_obj);
+//---ここまで------------------------
+//---操作実装---------------------------------------------------------
+    document.onkeydown = function(key){
+        console.log("keydown");
+        console.log(key);
+        console.log(key.keyCode);
+         if(key.keyCode == 65){
+             move_mode_change(65);
+         }   
+         if(key.keyCode == 68){
+             move_mode_change(68);
+         }
+    }
+    function move_mode_change(key){
+        if(move_mode == 0){move_mode = 1;}
+        if(move_mode == 1){
+            if(key == 65){
+                move_mode = 3;
+                return;
             }
         }
-    };
-//---マウスクリック実装-ここまで---------------------------------------------------------------------
+        if(move_mode == 1){
+            if(key == 68){
+                move_mode = 4;
+                return;
+            }
+        }
+        if(move_mode == 2){
+            if(key == 65){
+                move_mode = 4;
+                return;
+            }
+        }
+        if(move_mode == 2){
+            if(key == 68){
+                move_mode = 3;
+                return;
+            }
+        }
+        if(move_mode == 3){
+            if(key == 65){
+                move_mode = 2;
+                return;
+            }
+        }
+        if(move_mode == 3){
+            if(key == 68){
+                move_mode = 1;
+                return;
+            }
+        }
+        if(move_mode == 4){
+            if(key == 65){
+                move_mode = 1;
+                return;
+            }
+        }
+        if(move_mode == 4){
+            if(key == 68){
+                move_mode = 2;
+                return;
+            }
+        }
+    }
+//---ここまで----------------------------------------------
+//---方向転換---
+    function move(mode){
+        if(mode == 1){main_obj.position.x += 0.1;}
+        if(mode == 2){main_obj.position.x -= 0.1;}
+        if(mode == 3){main_obj.position.y += 0.1;}
+        if(mode == 4){main_obj.position.y -= 0.1;}
+    }
+//---ここまで---
 //---表示(アニメーションも)-ここから-----------------------------------------------------------------------------------
     function render(){
-        renderer.clear();
+        //renderer.clear();
+        main_obj.rotation.x += 0.1;
+        main_obj.rotation.y += 0.1;
+        move(move_mode);
+        console.log(move_mode);
         window.requestAnimationFrame(render);
-        //obj.position.x -= 0.01;
-        //obj.position.y -= 0.01;
         renderer.render(scene,camera);
     }
     render();
     //renderer.render(scene,camera);
-//---ここまで----------------------------------------------------------------------------------------
-
-
-
-
+//---ここまで--------------------------------------------------------
         </script>
     </body>
 </HTML>
