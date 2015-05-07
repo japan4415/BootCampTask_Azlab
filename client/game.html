@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
     <head>
-        <title>test_click</title>
+        <title>In Game</title>
         <meta charset="utf-8">
-    </head> 
+    </head>
     <body>
         <script src="./js/three.min.js"></script>
         <script src="./js/helvetiker_bold.typeface.js"></script>
@@ -40,53 +40,31 @@
     }
     init_camera();
 //---ここまで-------------------------------------------------------------------------------------
-//---タイトル実装と調整-ここから----------------------------------------------------------------
-    var geometry = new THREE.TextGeometry("Snake Battle",{size: 10, height: 2, curveSegments: 100,
-                    font: "helvetiker", weight: "bold", style: "normal",
-                    bevelThickness: 0.1, bevelSize: 0.1, bevelEnabled: true});
+//---ランダム出現実装と調整-ここから----------------------------------------------------------------
+    function item(){
+        this.placename = 0;
+        this.texturename = null;
+    }
+    function placexyz(){
+        this.x,this.y,this.z = 0;
+    }
+    var geometry = new THREE.CubeGeometry(1,1,1)
     var material = new THREE.MeshBasicMaterial({color:0x00ff01});
     var obj = new THREE.Mesh(geometry,material);
-    obj.position.x -= 40;
-    obj.position.y -= 40;
     scene.add(obj);
 //---ここまで-------------------------------------------------------------------------------------
-//---startボタン実装と調整-ここから----------------------------------------------------------------
-    var geometry = new THREE.TextGeometry("Start",{size: 10, height: 2, curveSegments: 100,
+//---3,2,1実装と調整-ここから----------------------------------------------------------------
+    var 3geometry = new THREE.TextGeometry("3",{size: 10, height: 2, curveSegments: 100,
                     font: "helvetiker", weight: "bold", style: "normal",
                     bevelThickness: 0.1, bevelSize: 0.1, bevelEnabled: true});
     var material = new THREE.MeshBasicMaterial({color:0x00ff01});
-    var startobj = new THREE.Mesh(geometry,material);
-    startobj.position.x -= 16;
-    startobj.position.y += 30;
-    scene.add(startobj);
-//---ここまで-------------------------------------------------------------------------------------
-//---Rankingボタン実装と調整-ここから----------------------------------------------------------------
-    var geometry = new THREE.TextGeometry("Ranking",{size: 5, height: 1, curveSegments: 100,
-                    font: "helvetiker", weight: "bold", style: "normal",
-                    bevelThickness: 0.1, bevelSize: 0.1, bevelEnabled: true});
-    var material = new THREE.MeshBasicMaterial({color:0x00ff01});
-    var robj = new THREE.Mesh(geometry,material);
-    robj.position.x += 15;
-    robj.position.y -= 25;
-    scene.add(robj);
-//---ここまで-------------------------------------------------------------------------------------
-//---動くもの実装と調整-ここから----------------------------------------------------------------
-    var demo_geometry = new THREE.CubeGeometry(21,0.1,0.1);
-    var cube = new Array(100);
-    
-    for (var i = 0;i < cube.length;i++){
-        cube[i] = new THREE.Mesh(demo_geometry,material);
-        scene.add(cube[i]);
-    }
+    var 3obj = new THREE.Mesh(3geometry,material);
+    scene.add(3obj);
 //---ここまで-------------------------------------------------------------------------------------
 //---マウスクリック実装-ここから------------------------------------------------------------------
     var projector = new THREE.Projector();
     var mouse = {x:0,y:0};
     var targetList = [];
-    targetList.push(obj);
-    for (var i = 0;i < cube.length;i++){
-        targetList.push(cube[i]);
-    }
     window.onmousedown = function(ev){
         if(ev.target == renderer.domElement){
             var rect = ev.target.getBoundingClientRect();
@@ -116,15 +94,14 @@
         //obj.position.x -= 0.01;
         //obj.position.y -= 0.01;
         renderer.render(scene,camera);
-        for(var i2 = 0;i2 < cube.length;i2++){
-            cube[i2].rotation.x += 0.01 * i2 / 5;
-            cube[i2].rotation.y += 0.01 * i2 / 5;
-            cube[i2].rotation.z += 0.01 * i2 / 5;
-        }
     }
     render();
     //renderer.render(scene,camera);
 //---ここまで----------------------------------------------------------------------------------------
+
+
+
+
         </script>
     </body>
-</html>
+</HTML>

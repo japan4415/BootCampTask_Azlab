@@ -33,7 +33,7 @@
             // マウスベクトル
             var vector = new THREE.Vector3( mouse.x, mouse.y ,1);
 
-           // vector はスクリーン座標系なので, オブジェクトの座標系に変換
+           // vector はスクリーン座標系なので, オブジェクトの座標系に変換;
             projector.unprojectVector( vector, camera );
 
             // 始点, 向きベクトルを渡してレイを作成
